@@ -1,24 +1,28 @@
 import logo from './logo.svg';
 import './App.css';
+import LoginComponent from './components/loginComponent/login'
+import SignupComponent from './components/signup/signup'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from './components/layout/layout'
+import 'react-toastify/dist/ReactToastify.css';
+import { useState } from 'react';
 
 function App() {
+  const [listedUsers, setListedUsers] = useState([{email: "ahemahem@gmail.com", password: "tada@1234", incorrectAttempts: 0}, {email: "tada@gmail.com", password: "ahem@1234", incorrectAttempts: 0}]);
+
+  const handleUsersUpdate = (updatedUsers) =>{
+    setListedUsers(updatedUsers)
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<LoginComponent listedUsers={listedUsers} updateUsers = {handleUsersUpdate}/>} />
+        <Route path="login" element={<LoginComponent listedUsers={listedUsers} updateUsers = {handleUsersUpdate}/>} />
+        <Route path="signup" element={<SignupComponent listedUsers={listedUsers} updateUsers = {handleUsersUpdate}/>} />
+      </Route>
+    </Routes>
+  </BrowserRouter>
   );
 }
 
