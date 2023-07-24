@@ -2,6 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 import LoginComponent from './components/loginComponent/login'
 import SignupComponent from './components/signup/signup'
+import Blog from './components/blogs/blog'
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './components/layout/layout'
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,6 +22,7 @@ function App() {
         <Route index element={<LoginComponent listedUsers={listedUsers} updateUsers = {handleUsersUpdate}/>} />
         <Route path="login" element={<LoginComponent listedUsers={listedUsers} updateUsers = {handleUsersUpdate}/>} />
         <Route path="signup" element={<SignupComponent listedUsers={listedUsers} updateUsers = {handleUsersUpdate}/>} />
+        <Route path="blogs" element={<Blog />} />
       </Route>
     </Routes>
   </BrowserRouter>

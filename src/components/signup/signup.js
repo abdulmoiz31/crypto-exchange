@@ -11,8 +11,7 @@ class SignupComponent extends Component{
           password: '',
           address: '',
           cnicDoc: null,
-          userBlocked: false,
-          listedUsers: [{email: "ahemahem@gmail.com", password: "tada@1234", incorrectAttempts: 0}, {email: "tada@gmail.com", password: "ahem@1234", incorrectAttempts: 0}]
+          userBlocked: false
         }
     }
 

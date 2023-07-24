@@ -9,8 +9,7 @@ class LoginComponent extends Component{
         this.state = {
           email:'',
           password: '',
-          userBlocked: false,
-          listedUsers: [{email: "ahemahem@gmail.com", password: "tada@1234", incorrectAttempts: 0}, {email: "tada@gmail.com", password: "ahem@1234", incorrectAttempts: 0}]
+          userBlocked: false
         }
     }
 
