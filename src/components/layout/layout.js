@@ -13,16 +13,16 @@ export default class layout extends Component {
             <div className="collapse navbar-collapse" id="navbarNav">
                 <ul className="navbar-nav">
                 <li className="nav-item active">
-                    <Link className="nav-link" to="/login">Home</Link>
+                    <Link className="nav-link" to="/dashboard">Dashboard</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="/login">About Us</Link>
+                    <Link className="nav-link" to="/about">About Us</Link>
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" to="/signup"> Sign Up</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="/login">Login</Link>
+                    <Link className="nav-link" to="/login">Logout</Link>
                 </li>
                 </ul>
                 

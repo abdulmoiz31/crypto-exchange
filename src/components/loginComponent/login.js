@@ -1,54 +1,59 @@
-import React from "react";
-import { Component } from "react";
+import React, { useEffect } from "react";
 import './login.css'
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
-class LoginComponent extends Component{
-    constructor(){
-        super();
-        this.state = {
-          email:'',
-          password: '',
-          userBlocked: false,
-          listedUsers: [{email: "ahemahem@gmail.com", password: "tada@1234", incorrectAttempts: 0}, {email: "tada@gmail.com", password: "ahem@1234", incorrectAttempts: 0}]
-        }
-    }
+const LoginComponent =(props) => {
+    
+    const [user, setUser] = React.useState({
+      email:'',
+      password: '',
+      userBlocked: false,
+    })
 
-    handleChange = (event) => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      props.setToken("");
+    }, []);
+
+    const handleChange = (event) => {
+      
       const { name, value } = event.target;
-      this.setState({ [name]: value });
+      setUser({...user, [name]: value });
     };
 
-    handleSubmit = (event) => {
+    const handleSubmit = (event) => {
       event.preventDefault();
       // Handle form submission here, you can access form values from this.state
 
-      var UserIndex = this.props.listedUsers.findIndex((user => user.email == this.state.email));
+      var UserIndex = props.listedUsers.findIndex((user => user.email == user.email));
       if (UserIndex != -1) {
-        if (this.props.listedUsers[UserIndex].password == this.state.password && this.props.listedUsers[UserIndex].incorrectAttempts < 3) {
-          var updatedUsers = this.props.listedUsers;
+        if (props.listedUsers[UserIndex].password == user.password && props.listedUsers[UserIndex].incorrectAttempts < 3) {
+          var updatedUsers = props.listedUsers;
           updatedUsers[UserIndex].incorrectAttempts = 0
-          this.props.updateUsers(updatedUsers);
-          this.showToast("Login Successfull", true)
-
-        } else if (this.props.listedUsers[UserIndex].incorrectAttempts == 3) {
-          this.showToast("User is blocked", false)
+          props.updateUsers(updatedUsers);
+          showToast("Login Successfull", true);
+          props.setToken("authorized");
+          navigate('/dashboard')
+        } else if (props.listedUsers[UserIndex].incorrectAttempts == 3) {
+          showToast("User is blocked", false)
         } else {
-          var updatedUsers = this.props.listedUsers;
-          updatedUsers[UserIndex].incorrectAttempts = this.props.listedUsers[UserIndex].incorrectAttempts + 1;
-          this.props.updateUsers(updatedUsers);
+          var updatedUsers = props.listedUsers;
+          updatedUsers[UserIndex].incorrectAttempts = props.listedUsers[UserIndex].incorrectAttempts + 1;
+          props.updateUsers(updatedUsers);
           
-          this.showToast("Incorrect Password", false)
+          showToast("Incorrect Password", false)
         }
       }
       else{
-        this.showToast("Email Not Registered", false)
+        showToast("Email Not Registered", false)
       }
     };
 
     
 
-    showToast(message, success){
+    const showToast =  (message, success)=>{
       if (success) {
         toast.success(message, {
           position: "top-right",
@@ -74,7 +79,7 @@ class LoginComponent extends Component{
       }
     }
 
-    render(){
+    
         return <div className="rootDiv">
                   <section className="vh-100">
                     <div className="container-fluid h-custom">
@@ -85,16 +90,16 @@ class LoginComponent extends Component{
                             className="img-fluid" alt="Sample image"/>
                         </div>
                         <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1" >
-                          <form onSubmit={this.handleSubmit}>
+                          <form onSubmit={handleSubmit}>
                             <div className="form-group mb-4">
                             <label className="form-label" htmlFor="form3Example3">Email address</label>
                               <input type="email" id="form3Example3" name="email" className="form-control form-control-lg"
-                                placeholder="Enter a valid email address" value={this.state.email} onChange={this.handleChange} />
+                                placeholder="Enter a valid email address" value={user.email} onChange={handleChange} />
                             </div>
                             <div className="form-group mb-3">
                             <label className="form-label" htmlFor="form3Example4">Password</label>
-                              <input type="password" id="form3Example4" name="password" value={this.state.password} className="form-control form-control-lg"
-                                placeholder="Enter password" onChange={this.handleChange} minLength={8} />
+                              <input type="password" id="form3Example4" name="password" value={user.password} className="form-control form-control-lg"
+                                placeholder="Enter password" onChange={handleChange} minLength={8} />
                             </div>
                             <div className="text-center text-lg-start mt-4 pt-2">
                               <button type="submit" className="btn btn-primary btn-lg"
@@ -108,6 +113,6 @@ class LoginComponent extends Component{
                   <ToastContainer />
                 </div>
     }
-}
+
 
 export default LoginComponent;
