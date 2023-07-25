@@ -11,7 +11,7 @@ class SignupComponent extends Component{
           password: '',
           address: '',
           cnicDoc: null,
-          userBlocked: false
+          userBlocked: false,
         }
     }
 
@@ -67,7 +67,7 @@ class SignupComponent extends Component{
     }
 
     render(){
-        return <div className="rootDiv">
+        return <div>
                   <section className="vh-100">
                     <div className="container-fluid h-custom">
                       <div className="row d-flex justify-content-center align-items-center h-100">
