@@ -2,47 +2,43 @@ import React, { useEffect } from "react";
 import './login.css'
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
+import {updateLoginForm} from '../../actions/updateLoginForm'
+import {setToken, removeToken} from '../../actions/tokenActions'
+import { updateUser } from "../../actions/userActions";
 
-const LoginComponent =(props) => {
+const LoginComponent = ({listedUsers, updateLoginForm, setToken, loginForm, removeToken, updateUser}) => {
     
-    const [user, setUser] = React.useState({
-      email:'',
-      password: '',
-      userBlocked: false,
-    })
-
     const navigate = useNavigate();
 
     useEffect(() => {
-      props.setToken("");
+      removeToken();
     }, []);
 
     const handleChange = (event) => {
-      
       const { name, value } = event.target;
-      setUser({...user, [name]: value });
+      updateLoginForm({[name]: value });
     };
 
     const handleSubmit = (event) => {
       event.preventDefault();
       // Handle form submission here, you can access form values from this.state
 
-      var UserIndex = props.listedUsers.findIndex((user => user.email == user.email));
+      var UserIndex = listedUsers.findIndex((user => user.email == loginForm.email));
       if (UserIndex != -1) {
-        if (props.listedUsers[UserIndex].password == user.password && props.listedUsers[UserIndex].incorrectAttempts < 3) {
-          var updatedUsers = props.listedUsers;
+        if (listedUsers[UserIndex].password == loginForm.password && listedUsers[UserIndex].incorrectAttempts < 3) {
+          var updatedUsers = listedUsers;
           updatedUsers[UserIndex].incorrectAttempts = 0
-          props.updateUsers(updatedUsers);
+          var updatedUser = {property: 'incorrectAttempts', index: UserIndex, value: 0};
+          updateUser(updatedUser);
           showToast("Login Successfull", true);
-          props.setToken("authorized");
+          setToken("authorized");
           navigate('/dashboard')
-        } else if (props.listedUsers[UserIndex].incorrectAttempts == 3) {
+        } else if (listedUsers[UserIndex].incorrectAttempts == 3) {
           showToast("User is blocked", false)
         } else {
-          var updatedUsers = props.listedUsers;
-          updatedUsers[UserIndex].incorrectAttempts = props.listedUsers[UserIndex].incorrectAttempts + 1;
-          props.updateUsers(updatedUsers);
-          
+          var updatedUser = {property: 'incorrectAttempts', index: UserIndex, value: listedUsers[UserIndex].incorrectAttempts + 1};
+          updateUser(updatedUser);
           showToast("Incorrect Password", false)
         }
       }
@@ -94,11 +90,11 @@ const LoginComponent =(props) => {
                             <div className="form-group mb-4">
                             <label className="form-label" htmlFor="form3Example3">Email address</label>
                               <input type="email" id="form3Example3" name="email" className="form-control form-control-lg"
-                                placeholder="Enter a valid email address" value={user.email} onChange={handleChange} />
+                                placeholder="Enter a valid email address" value={loginForm.email} onChange={handleChange} />
                             </div>
                             <div className="form-group mb-3">
                             <label className="form-label" htmlFor="form3Example4">Password</label>
-                              <input type="password" id="form3Example4" name="password" value={user.password} className="form-control form-control-lg"
+                              <input type="password" id="form3Example4" name="password" value={loginForm.password} className="form-control form-control-lg"
                                 placeholder="Enter password" onChange={handleChange} minLength={8} />
                             </div>
                             <div className="text-center text-lg-start mt-4 pt-2">
@@ -114,5 +110,22 @@ const LoginComponent =(props) => {
                 </div>
     }
 
+    const mapStateToProps = (state) => {
+      debugger;
+      return {
+        loginForm: state.login.loginForm,
+        listedUsers: state.users.listedUsers,
+      };
+    };
 
-export default LoginComponent;
+    const mapDispatchToProps = (dispatch) => {
+      return {
+        updateLoginForm: (loginForm) => dispatch(updateLoginForm(loginForm)),
+        setToken: (token)=> dispatch(setToken(token)),
+        removeToken: ()=> dispatch(removeToken()),
+        updateUser: (user)=> dispatch(updateUser(user))
+      };
+    };
+
+
+  export default connect(mapStateToProps, mapDispatchToProps)(LoginComponent);

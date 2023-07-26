@@ -1,46 +1,38 @@
 import React from "react";
-import { Component } from "react";
 import { ToastContainer, toast } from 'react-toastify';
+import { connect } from 'react-redux';
+import {updateSignupForm} from '../../actions/updateSignupForm'
+import {addUser} from '../../actions/userActions'
 
-class SignupComponent extends Component{
-    constructor(){
-        super();
-        this.state = {
-          email: '',
-          name: '',
-          password: '',
-          address: '',
-          cnicDoc: null,
-          userBlocked: false,
-        }
-    }
+const SignupComponent = ({signupForm, listedUsers, updateSignupForm, addUser})=> {
+    
 
-    handleChange = (event) => {
+   const handleChange = (event) => {
         const { name, value, type } = event.target;
         if (type === 'file') {
-          this.setState({ [name]: event.target.files[0] });
+          updateSignupForm({ [name]: event.target.files[0] });
         } else {
-          this.setState({ [name]: value });
+          updateSignupForm({ [name]: value });
         }
     };
 
-    handleSubmit = (event) => {
+    const handleSubmit = (event) => {
       event.preventDefault();
       // Handle form submission here, you can access form values from this.state
-
-      var UserIndex = this.props.listedUsers.findIndex((user => user.email == this.state.email));
+      //console.log(signupForm)
+      var UserIndex = listedUsers.findIndex((user => user.email == signupForm.email));
       if (UserIndex == -1) {
-          var updatedUsers = this.props.listedUsers;
-          updatedUsers.push({email: this.state.email, password: this.state.password, incorrectAttempts: 0})
-          this.showToast("SignUp Successfull", true)  
+        var newUser = signupForm;
+        newUser.incorrectAttempts = 0;
+          addUser(newUser);
+          showToast("SignUp Successfull", true)  
       }else {
-        this.showToast("Email already registered", false)
+        showToast("Email already registered", false)
       }
     };
 
     
-
-    showToast(message, success){
+    const showToast = (message, success)=>{
       if (success) {
         toast.success(message, {
           position: "top-right",
@@ -66,7 +58,7 @@ class SignupComponent extends Component{
       }
     }
 
-    render(){
+    
         return <div>
                   <section className="vh-100">
                     <div className="container-fluid h-custom">
@@ -77,31 +69,31 @@ class SignupComponent extends Component{
                             className="img-fluid" alt="Sample image"/>
                         </div>
                         <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1" >
-                          <form onSubmit={this.handleSubmit}>
+                          <form onSubmit={handleSubmit}>
                           <div className="form-group mb-4">
                             <label className="form-label" htmlFor="name">Name</label>
                               <input type="text" id="name" name="name" className="form-control form-control-lg"
-                                placeholder="Enter your name" value={this.state.name} onChange={this.handleChange} required/>
+                                placeholder="Enter your name" value={signupForm.name} onChange={handleChange} required/>
                             </div>
                             <div className="form-group mb-4">
                             <label className="form-label" htmlFor="email">Email address</label>
                               <input type="email" id="email" name="email" className="form-control form-control-lg"
-                                placeholder="Enter a valid email address" value={this.state.email} onChange={this.handleChange} required/>
+                                placeholder="Enter a valid email address" value={signupForm.email} onChange={handleChange} required/>
                             </div>
                             <div className="form-group mb-3">
                             <label className="form-label" htmlFor="password">Password</label>
-                              <input type="password" id="password" name="password" value={this.state.password} className="form-control form-control-lg"
-                                placeholder="Enter password" onChange={this.handleChange} minLength={8} required/>
+                              <input type="password" id="password" name="password" value={signupForm.password} className="form-control form-control-lg"
+                                placeholder="Enter password" onChange={handleChange} minLength={8} required/>
                             </div>
                             <div className="form-group mb-4">
                             <label className="form-label" htmlFor="address">Home Address</label>
                               <input type="text" id="address" name="address" className="form-control form-control-lg"
-                                placeholder="Enter your home address" value={this.state.address} onChange={this.handleChange} required/>
+                                placeholder="Enter your home address" value={signupForm.address} onChange={handleChange} required/>
                             </div>
                             <div className="form-group mb-4">
                             <label className="form-label" htmlFor="cnicDoc">CNIC Document</label>
                               <input type="file" id="cnicDoc" name="cnicDoc" className="form-control form-control-lg"
-                                 onChange={this.handleChange} required/>
+                                 onChange={handleChange} required/>
                             </div>
                             <div className="text-center text-lg-start mt-4 pt-2">
                               <button type="submit" className="btn btn-primary btn-lg"
@@ -115,6 +107,21 @@ class SignupComponent extends Component{
                   <ToastContainer />
                 </div>
     }
-}
 
-export default SignupComponent;
+    const mapStateToProps = (state) => {
+      debugger;
+      return {
+        signupForm: state.signup.signupForm,
+        listedUsers: state.users.listedUsers,
+      };
+    };
+
+    const mapDispatchToProps = (dispatch) => {
+      return {
+        updateSignupForm: (signupForm) => dispatch(updateSignupForm(signupForm)),
+        addUser: (user)=> dispatch(addUser(user)),
+      };
+    };
+
+
+  export default connect(mapStateToProps, mapDispatchToProps)(SignupComponent);

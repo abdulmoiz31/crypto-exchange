@@ -1,11 +1,12 @@
 import React, {useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const Dashboard = (props) => {
+const Dashboard = ({token}) => {
 
     const navigate = useNavigate();
     useEffect(() => {
-        if (!props.token) {
+        if (!token) {
             navigate('/login')
         }
       }, []);
@@ -18,4 +19,16 @@ const Dashboard = (props) => {
   )
 }
 
-export default Dashboard;
+const mapStateToProps = (state) => {
+    debugger;
+    return {
+      token: state.token.token,
+    };
+  };
+
+  const mapDispatchToProps = (dispatch) => {
+    return {
+    };
+  };
+
+  export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
