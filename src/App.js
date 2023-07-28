@@ -9,7 +9,7 @@ import About from './components/about/about'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './components/layout/layout'
 import 'react-toastify/dist/ReactToastify.css';
-import { useState } from 'react';
+import TransferCoin from './components/dashboard/transferCoin'
 
 function App() {
 
@@ -22,6 +22,8 @@ function App() {
         <Route path="signup" element={<SignupComponent/>} />
         <Route path="blogs" element={<Blog />} />
         <Route index path="dashboard" element={<Dashboard/>} />
+        <Route index path="dashboard/transfer" element={<TransferCoin/>} />
+        
         <Route index path="about" element={<About/>} />
       </Route>
     </Routes>

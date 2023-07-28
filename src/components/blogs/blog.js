@@ -12,6 +12,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { ToastContainer, toast } from 'react-toastify';
+import { addBlog, updateBlog, deleteBlog } from '../../actions/blogActions';
+import { useSelector, useDispatch } from 'react-redux';
 
 const columns = [
   { id: 'id', label: 'Blog ID', minWidth: 170 ,align: 'center',},
@@ -43,23 +45,7 @@ function createData(id, title, subtitle, author) {
 }
 
 const rows = [
-  createData('1', 'Blog 1', 'example', 'tada'),
-  createData('2', 'Blog 1', 'example', 'tada'),
-  createData('3', 'Blog 1', 'example', 'tada'),
-  createData('4', 'Blog 1', 'example', 'tada'),
-  createData('5', 'Blog 1', 'example', 'tada'),
-  createData('6', 'Blog 1', 'example', 'tada'),
-  createData('7', 'Blog 1', 'example', 'tada'),
-  createData('8', 'Blog 1', 'example', 'tada'),
-  createData('9', 'Blog 1', 'example', 'tada'),
-  createData('10', 'Blog 1', 'example', 'tada'),
-  createData('11', 'Blog 1', 'example', 'tada'),
-  createData('12', 'Blog 1', 'example', 'tada'),
-  createData('13', 'Blog 1', 'example', 'tada'),
-  createData('14', 'Blog 1', 'example', 'tada'),
-  createData('15', 'Blog 1', 'example', 'tada'),
-  createData('16', 'Blog 1', 'example', 'tada'),
-  createData('17', 'Blog 1', 'example', 'tada'),
+  
 ];
 
 const style = {
@@ -75,22 +61,32 @@ const style = {
 };
 
 export default function Blog() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [blogs, setBlogs] = React.useState(rows)
   const [viewBlog, setViewBlog] = React.useState({});
   const [editBlog, setEditBlog] = React.useState({id: '', title: '', author: '', subtitle: ''});
-  const [addBlog, setAddBlog] = React.useState({id: '', title: '', author: '', subtitle: ''});
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  const [addBlogForm, setAddBlog] = React.useState({id: '', title: '', author: '', subtitle: ''});
 
   const handleViewClick = (blog) => {
     setViewBlog(blog)
     handleOpenView()
     console.log(blog);
   }
+
+  const dispatch = useDispatch();
+  const blogs = useSelector((state) => state.blogs.blogs);
+  console.log(Array.isArray(blogs));
+  
+
+  const handleAddBlog = (newBlog) => {
+    dispatch(addBlog(newBlog));
+  };
+
+  const handleUpdateBlog = (id, updatedBlog) => {
+    dispatch(updateBlog(id, updatedBlog));
+  };
+
+  const handleDeleteBlog = (id) => {
+    dispatch(deleteBlog(id));
+  };
 
   const handleEditClick = (blog) => {
     setEditBlog(blog);
@@ -99,15 +95,14 @@ export default function Blog() {
   }
 
   const handleDeleteClick = (blog) => {
-    debugger;
+    
     var blogIndex = blogs.findIndex((item => item.id == blog.id));
     if (blogIndex > -1) {
-      var updatedBlogs = blogs.filter((_, i) => i !== blogIndex);
-
-      setBlogs(updatedBlogs);
+//      var updatedBlogs = blogs.filter((_, i) => i !== blogIndex);
+      handleDeleteBlog(blog.id);
+  //    setBlogs(updatedBlogs);
       showToast("Blog Deleted Successfully", true)
     }
-    console.log(updatedBlogs);
   }
 
   const handleChange = (event) => {
@@ -123,8 +118,8 @@ export default function Blog() {
     const { name, value } = event.target;
     //var updatedEditBlog = editBlog;
     
-    setAddBlog({...addBlog, [name] : value});
-    console.log(addBlog);
+    setAddBlog({...addBlogForm, [name] : value});
+    console.log(addBlogForm);
   };
 
   const [openView, setOpenView] = React.useState(false);
@@ -139,22 +134,14 @@ export default function Blog() {
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    debugger;
+    
     // Handle form submission here, you can access form values from this.state
 
     var blogIndex = blogs.findIndex((blog => blog.id == editBlog.id));
     if (blogIndex !== -1) {
-        var updatedBlogs = blogs;
-        updatedBlogs[blogIndex].title = editBlog.title;
-        updatedBlogs[blogIndex].subtitle = editBlog.subtitle;
-        updatedBlogs[blogIndex].author = editBlog.author;
+        handleUpdateBlog(editBlog.id, editBlog)
         showToast("Blog Updated Successfully", true)
         handleCloseEdit()
     }else {
@@ -164,15 +151,16 @@ export default function Blog() {
 
   const handleSubmitAdd = (event) => {
     event.preventDefault();
-    debugger;
+    
     // Handle form submission here, you can access form values from this.state
 
-    var blogIndex = blogs.findIndex((blog => blog.id == addBlog.id));
+    var blogIndex = blogs.findIndex((blog => blog.id == addBlogForm.id));
     if (blogIndex == -1) {
-        var updatedBlogs = blogs;
-        updatedBlogs.push(addBlog);
-        setBlogs(updatedBlogs);
-        showToast("Blog Updated Successfully", true)
+        // var updatedBlogs = blogs;
+        // updatedBlogs.push(addBlog);
+        handleAddBlog(addBlogForm);
+        //setBlogs(updatedBlogs);
+        showToast("Blog Added Successfully", true)
         handleCloseAdd()
     }else {
       showToast("Blog with same ID already exists", false)
@@ -226,7 +214,6 @@ export default function Blog() {
           </TableHead>
           <TableBody>
             {blogs
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
@@ -246,7 +233,7 @@ export default function Blog() {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
+      {/* <TablePagination
         rowsPerPageOptions={[10, 20, 50]}
         component="div"
         count={rows.length}
@@ -254,7 +241,7 @@ export default function Blog() {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
     </Paper>
     <Modal
       open={openView}
@@ -324,19 +311,19 @@ export default function Blog() {
         <form onSubmit={handleSubmitAdd}>
         <div className="form-group mb-3">
             <label className="form-label" htmlFor="editId">Blog ID</label>
-            <input type="text" className="form-control" name="id" id="editId" value={addBlog.id} onChange={handleChangeAdd} placeholder="Enter Blog ID" required/>
+            <input type="text" className="form-control" name="id" id="editId" value={addBlogForm.id} onChange={handleChangeAdd} placeholder="Enter Blog ID" required/>
           </div>
           <div className="form-group mb-3">
             <label className="form-label" htmlFor="editTitle">Title</label>
-            <input type="text" className="form-control" name="title" id="editTitle" value={addBlog.title} onChange={handleChangeAdd} placeholder="Enter Blog Title" required/>
+            <input type="text" className="form-control" name="title" id="editTitle" value={addBlogForm.title} onChange={handleChangeAdd} placeholder="Enter Blog Title" required/>
           </div>
           <div className="form-group mb-3">
             <label className="form-label" htmlFor="editSubTitle">Subtitle</label>
-            <input type="text" className="form-control" name="subtitle" id="editSubTitle" value={addBlog.subtitle} onChange={handleChangeAdd} placeholder="Enter Blog Subtitle" required/>
+            <input type="text" className="form-control" name="subtitle" id="editSubTitle" value={addBlogForm.subtitle} onChange={handleChangeAdd} placeholder="Enter Blog Subtitle" required/>
           </div>
           <div className="form-group mb-3">
             <label className="form-label" htmlFor="editAuthor">Author</label>
-            <input type="text" className="form-control" name="author" id="editAuthor" value={addBlog.author} onChange={handleChangeAdd} placeholder="Enter Blog Author" required/>
+            <input type="text" className="form-control" name="author" id="editAuthor" value={addBlogForm.author} onChange={handleChangeAdd} placeholder="Enter Blog Author" required/>
           </div>
           <button type="submit" className="btn btn-primary">Add Blog</button>
         </form>
