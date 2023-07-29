@@ -19,6 +19,9 @@ export default class layout extends Component {
                     <Link className="nav-link" to="/about">About Us</Link>
                 </li>
                 <li className="nav-item">
+                    <Link className="nav-link" to="/blogs">Blogs</Link>
+                </li>
+                <li className="nav-item">
                     <Link className="nav-link" to="/signup"> Sign Up</Link>
                 </li>
                 <li className="nav-item">

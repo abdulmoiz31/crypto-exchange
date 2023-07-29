@@ -1,4 +1,5 @@
 import axios from 'axios';
+const baseUrl = "https://my-json-server.typicode.com/abdulmoiz31/crypto-exchange";
 
 export const ADD_BLOG_REQUEST = 'ADD_BLOG_REQUEST';
 export const ADD_BLOG_SUCCESS = 'ADD_BLOG_SUCCESS';
@@ -72,13 +73,15 @@ const addBlogRequest = () => ({
     payload: error,
   });
 
-export const fetchDataFromServer = () => {
+export const fetchBlogsFromServer = () => {
   return (dispatch) => {
+    debugger;
     dispatch(fetchBlogsRequest());
 
     axios
-      .get('http://localhost:3000/blogs')
+      .get(`${baseUrl}/blogs`)
       .then((response) => {
+        debugger;
         const data = response.data;
         dispatch(fetchBlogsSuccess(data));
       })
@@ -88,12 +91,12 @@ export const fetchDataFromServer = () => {
   };
 };
 
-export const addBlogToServer = (id, blog) => {
+export const addBlogToServer = (blog) => {
     return (dispatch) => {
       dispatch(addBlogRequest());
   
       axios
-        .put(`http://localhost:3000/blogs/${id}`, blog)
+        .put(`${baseUrl}/blogs/${blog.id}`, blog)
         .then((response) => {
           const data = response.data;
           dispatch(addBlogSuccess(data));
@@ -109,7 +112,7 @@ export const addBlogToServer = (id, blog) => {
       dispatch(updateBlogRequest());
   
       axios
-        .patch(`http://localhost:3000/blogs/${id}`, blog)
+        .patch(`${baseUrl}/blogs/${id}`, blog)
         .then((response) => {
           const data = response.data;
           dispatch(updateBlogSuccess(data));
@@ -125,7 +128,7 @@ export const addBlogToServer = (id, blog) => {
       dispatch(deleteBlogRequest());
   
       axios
-        .delete(`http://localhost:3000/blogs/${id}`)
+        .delete(`${baseUrl}/blogs/${id}`)
         .then((response) => {
           const data = response.data;
           dispatch(deleteBlogSuccess(data));

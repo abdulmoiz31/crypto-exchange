@@ -42,7 +42,7 @@ const Dashboard = ({token}) => {
 
     const { rates, loadingRates, errorRates } = useSelector((state) => state.rates);
     console.log(rates);
-    console.log(Array.isArray(data));
+    console.log(data);
     const navigate = useNavigate();
     
     useEffect(() => {

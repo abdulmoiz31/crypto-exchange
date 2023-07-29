@@ -111,7 +111,6 @@ const LoginComponent = ({listedUsers, updateLoginForm, setToken, loginForm, remo
     }
 
     const mapStateToProps = (state) => {
-      debugger;
       return {
         loginForm: state.login.loginForm,
         listedUsers: state.users.listedUsers,

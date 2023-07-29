@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect} from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,6 +15,7 @@ import Modal from '@mui/material/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import { addBlog, updateBlog, deleteBlog } from '../../actions/blogActions';
 import { useSelector, useDispatch } from 'react-redux';
+import {fetchBlogsFromServer, addBlogToServer, updateBlogToServer, deleteBlogFromServer} from '../../actions/blogsApi'
 
 const columns = [
   { id: 'id', label: 'Blog ID', minWidth: 170 ,align: 'center',},
@@ -39,15 +41,6 @@ const columns = [
   }
 ];
 
-function createData(id, title, subtitle, author) {
-  
-  return { id, title, subtitle, author };
-}
-
-const rows = [
-  
-];
-
 const style = {
   position: 'absolute',
   top: '50%',
@@ -71,21 +64,26 @@ export default function Blog() {
     console.log(blog);
   }
 
-  const dispatch = useDispatch();
-  const blogs = useSelector((state) => state.blogs.blogs);
-  console.log(Array.isArray(blogs));
   
 
+  const dispatch = useDispatch();
+  const { Blogs, loadingBlogs, errorBlogs } = useSelector((state) => state.blogsFromServer);
+  
+  useEffect(() => {
+    debugger;
+    dispatch(fetchBlogsFromServer());
+  }, [dispatch]);
+
   const handleAddBlog = (newBlog) => {
-    dispatch(addBlog(newBlog));
+    dispatch(addBlogToServer(newBlog));
   };
 
   const handleUpdateBlog = (id, updatedBlog) => {
-    dispatch(updateBlog(id, updatedBlog));
+    dispatch(updateBlogToServer(id, updatedBlog));
   };
 
   const handleDeleteBlog = (id) => {
-    dispatch(deleteBlog(id));
+    dispatch(deleteBlogFromServer(id));
   };
 
   const handleEditClick = (blog) => {
@@ -96,7 +94,7 @@ export default function Blog() {
 
   const handleDeleteClick = (blog) => {
     
-    var blogIndex = blogs.findIndex((item => item.id == blog.id));
+    var blogIndex = Blogs.findIndex((item => item.id == blog.id));
     if (blogIndex > -1) {
 //      var updatedBlogs = blogs.filter((_, i) => i !== blogIndex);
       handleDeleteBlog(blog.id);
@@ -139,7 +137,7 @@ export default function Blog() {
     
     // Handle form submission here, you can access form values from this.state
 
-    var blogIndex = blogs.findIndex((blog => blog.id == editBlog.id));
+    var blogIndex = Blogs.findIndex((blog => blog.id == editBlog.id));
     if (blogIndex !== -1) {
         handleUpdateBlog(editBlog.id, editBlog)
         showToast("Blog Updated Successfully", true)
@@ -154,7 +152,7 @@ export default function Blog() {
     
     // Handle form submission here, you can access form values from this.state
 
-    var blogIndex = blogs.findIndex((blog => blog.id == addBlogForm.id));
+    var blogIndex = Blogs.findIndex((blog => blog.id == addBlogForm.id));
     if (blogIndex == -1) {
         // var updatedBlogs = blogs;
         // updatedBlogs.push(addBlog);
@@ -193,6 +191,14 @@ export default function Blog() {
     }
   }
 
+  if (loadingBlogs) {
+    return <div>Loading...</div>
+  }
+
+  if (errorBlogs) {
+    return <div>Error: {errorBlogs}</div>
+  }
+
   return (
     <div>
     <div className='d-flex flex-row-reverse'><button type="button" onClick={handleOpenAdd} className="btn btn-outline-primary mr-5">Add Blog</button></div>
@@ -213,7 +219,7 @@ export default function Blog() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {blogs
+            {Blogs
               .map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
@@ -233,15 +239,6 @@ export default function Blog() {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* <TablePagination
-        rowsPerPageOptions={[10, 20, 50]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
     </Paper>
     <Modal
       open={openView}

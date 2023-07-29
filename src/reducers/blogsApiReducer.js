@@ -1,33 +1,88 @@
-import { FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE } from '../actions/coinsApiActions';
+import { ADD_BLOG_REQUEST, ADD_BLOG_SUCCESS, ADD_BLOG_FAILURE, UPDATE_BLOG_REQUEST, UPDATE_BLOG_SUCCESS, UPDATE_BLOG_FAILURE, DELETE_BLOG_REQUEST, DELETE_BLOG_SUCCESS, DELETE_BLOG_FAILURE, FETCH_BLOGS_REQUEST, FETCH_BLOGS_SUCCESS, FETCH_BLOGS_FAILURE } from '../actions/blogsApi';
 
 const initialState = {
-  data: [],
-  loading: false,
-  error: null,
+  Blogs: [],
+  loadingBlogs: false,
+  errorBlogs: null,
 };
 
-const dataReducer = (state = initialState, action) => {
+const blogsApiReducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_DATA_REQUEST:
+    case FETCH_BLOGS_REQUEST:
+      debugger;
       return {
         ...state,
-        loading: true,
+        loadingBlogs: true,
+        errorBlogs: null
       };
-    case FETCH_DATA_SUCCESS:
+    case FETCH_BLOGS_SUCCESS:
       return {
         ...state,
-        loading: false,
-        data: action.payload,
+        loadingBlogs: false,
+        Blogs: action.payload,
       };
-    case FETCH_DATA_FAILURE:
+    case FETCH_BLOGS_FAILURE:
       return {
         ...state,
-        loading: false,
-        error: action.payload,
+        loadingBlogs: false,
+        errorBlogs: action.payload,
       };
+    case ADD_BLOG_REQUEST:
+      return {
+        ...state,
+        loadingBlogs: true,
+        errorBlogs: null
+      };
+    case ADD_BLOG_SUCCESS:
+      return {
+        ...state,
+        loadingBlogs: false,
+        Blogs: action.payload,
+      };
+    case ADD_BLOG_FAILURE:
+      return {
+        ...state,
+        loadingBlogs: false,
+        errorBlogs: action.payload,
+      };
+    case UPDATE_BLOG_REQUEST:
+        return {
+          ...state,
+          loadingBlogs: true,
+          errorBlogs: null
+        };
+      case UPDATE_BLOG_SUCCESS:
+        return {
+          ...state,
+          loadingBlogs: false,
+        };
+      case UPDATE_BLOG_FAILURE:
+        return {
+          ...state,
+          loadingBlogs: false,
+          errorBlogs: action.payload,
+        };
+      case DELETE_BLOG_REQUEST:
+          return {
+            ...state,
+            loadingBlogs: true,
+            errorBlogs: null
+          };
+        case DELETE_BLOG_SUCCESS:
+          return {
+            ...state,
+            loadingBlogs: false,
+            Blogs: action.payload,
+          };
+        case DELETE_BLOG_FAILURE:
+          return {
+            ...state,
+            loadingBlogs: false,
+            errorBlogs: action.payload,
+          };
     default:
       return state;
   }
 };
 
-export default dataReducer;
+export default blogsApiReducer;

@@ -27,8 +27,9 @@ export const fetchDataFromServer = () => {
     dispatch(fetchDataRequest());
 
     axios
-      .get('http://localhost:3000/coinsPurchased')
+      .get('https://my-json-server.typicode.com/abdulmoiz31/crypto-exchange/coinsPurchased')
       .then((response) => {
+        debugger;
         const data = response.data;
         dispatch(fetchDataSuccess(data));
       })
@@ -57,7 +58,7 @@ export const fetchRatesFromServer = () => {
     dispatch(fetchRatesRequest());
 
     axios
-      .get('http://localhost:3000/rates')
+      .get('https://my-json-server.typicode.com/abdulmoiz31/crypto-exchange/rates')
       .then((response) => {
         const data = response.data;
         dispatch(fetchRatesSuccess(data));
