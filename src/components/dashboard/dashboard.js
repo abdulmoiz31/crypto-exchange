@@ -2,8 +2,8 @@ import React, {useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDataFromServer } from '../../actions/blogsApiActions';
-import { fetchRatesFromServer } from '../../actions/blogsApiActions';
+import { fetchDataFromServer } from '../../actions/coinsApiActions';
+import { fetchRatesFromServer } from '../../actions/coinsApiActions';
 import { setCoin } from '../../actions/coinTransferActions';
 
 import Paper from '@mui/material/Paper';
