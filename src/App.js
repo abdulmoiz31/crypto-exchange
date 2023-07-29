@@ -19,7 +19,7 @@ function App() {
     <BrowserRouter>
     <Routes>
     <Route path="login" element={<LoginComponent/>} />
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<Protected isLoggedIn={token}><Layout /></Protected>}>
         {/* <Route index element={<LoginComponent listedUsers={listedUsers} updateUsers = {handleUsersUpdate}/>} /> */}
         <Route path="signup" element={<SignupComponent/>} />
         <Route path="blogs" element={ <Protected isLoggedIn={token}><Blog /></Protected> } />
